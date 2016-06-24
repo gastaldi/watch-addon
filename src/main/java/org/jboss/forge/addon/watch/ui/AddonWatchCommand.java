@@ -53,10 +53,11 @@ public class AddonWatchCommand implements UICommand
    public UICommandMetadata getMetadata(UIContext context)
    {
       return Metadata.forCommand(getClass()).name("Addon: Watch Start")
-               .description("Start Watching when an addon is modified and reinstall it")
+               .description("Start Watching when addons marked as SNAPSHOT are modified and reinstall it")
                .category(Categories.create("Addon"));
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Result execute(final UIExecutionContext executionContext) throws Exception
    {
