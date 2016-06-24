@@ -8,8 +8,6 @@
 package org.jboss.forge.addon.watch.ui;
 
 import java.io.File;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.resource.ResourceFactory;
@@ -18,6 +16,7 @@ import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
+import org.jboss.forge.addon.ui.output.UIOutput;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
@@ -61,27 +60,24 @@ public class AddonWatchCommand implements UICommand
    @Override
    public Result execute(final UIExecutionContext executionContext) throws Exception
    {
-      Set<AddonId> snapshotAddons = addonRegistry.getAddons(addon -> Versions.isSnapshot(addon.getId().getVersion())
-               && addon.getRepository() instanceof MutableAddonRepository)
-               .stream().map(Addon::getId).collect(Collectors.toSet());
-
-      if (snapshotAddons.isEmpty())
-      {
-         return Results.fail("No SNAPSHOT addons found. Execute again when at least one SNAPSHOT addon is installed");
-      }
-
-      for (final AddonId addonId : snapshotAddons)
-      {
-         // Find local repository path for each addon
-         File installationPath = getInstallationPathFor(addonId);
-         FileResource<?> resource = resourceFactory.create(FileResource.class, installationPath);
-         resource.monitor().addResourceListener(e -> {
-            // Run addonManager.remove and addonManager.install
-            addonManager.remove(addonId).perform();
-            addonManager.install(addonId).perform();
-         });
-      }
-      return Results.success("Listening for changes in the following addons: " + snapshotAddons);
+      final UIOutput output = executionContext.getUIContext().getProvider().getOutput();
+      addonRegistry
+               .getAddons(addon -> Versions.isSnapshot(addon.getId().getVersion())
+                        && addon.getRepository() instanceof MutableAddonRepository)
+               .stream()
+               .map(Addon::getId)
+               .forEach(addonId -> {
+                  // Find local repository path for each addon
+                  File installationPath = getInstallationPathFor(addonId);
+                  FileResource<?> resource = resourceFactory.create(FileResource.class, installationPath);
+                  resource.monitor().addResourceListener(e -> {
+                     // Run addonManager.remove and addonManager.install
+                     addonManager.remove(addonId).perform();
+                     addonManager.install(addonId).perform();
+                  });
+                  output.info(output.out(), "Monitoring changes on " + addonId);
+               });
+      return Results.success();
    }
 
    static File getInstallationPathFor(AddonId addonId)
