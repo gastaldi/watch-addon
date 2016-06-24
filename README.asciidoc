@@ -10,7 +10,7 @@ From Forge CLI:
 
 [source,shell]
 ----
-addon-install-from-git --url https://github.com/forge/wildfly-swarm-addon.git
+addon-install-from-git --url https://github.com/gastaldi/watch-addon.git
 ----
 
 Then you can use it like:
