@@ -1,0 +1,39 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+package org.jboss.forge.addon.watch.ui;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import java.io.File;
+
+import org.jboss.forge.furnace.addons.AddonId;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+
+/**
+ *
+ * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
+ */
+public class AddonWatchCommandTest
+{
+
+   /**
+    * Test method for
+    * {@link org.jboss.forge.addon.watch.ui.AddonWatchCommand#getInstallationPathFor(org.jboss.forge.furnace.addons.AddonId)}.
+    */
+   @Test
+   @Ignore
+   public void testGetInstallationPathFor()
+   {
+      AddonId id = AddonId.from("org.foo:bar", "1.0.0-SNAPSHOT");
+      File path = AddonWatchCommand.getInstallationPathFor(id);
+      Assert.assertThat(path.toString(), equalTo("~/.m2/repository/org/foo/bar/1.0.0-SNAPSHOT/bar-1.0.0-SNAPSHOT.jar"));
+   }
+
+}
