@@ -8,7 +8,7 @@
 package org.jboss.forge.addon.watch.ui;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jboss.forge.addon.resource.FileResource;
@@ -60,9 +60,9 @@ public class AddonWatchCommand implements UICommand
    @Override
    public Result execute(final UIExecutionContext executionContext) throws Exception
    {
-      List<AddonId> snapshotAddons = addonRegistry.getAddons(addon -> Versions.isSnapshot(addon.getId().getVersion())
+      Set<AddonId> snapshotAddons = addonRegistry.getAddons(addon -> Versions.isSnapshot(addon.getId().getVersion())
                && addon.getRepository() instanceof MutableAddonRepository)
-               .stream().map(Addon::getId).collect(Collectors.toList());
+               .stream().map(Addon::getId).collect(Collectors.toSet());
 
       if (snapshotAddons.isEmpty())
       {
