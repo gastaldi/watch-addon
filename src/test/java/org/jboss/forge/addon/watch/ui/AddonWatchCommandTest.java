@@ -7,13 +7,12 @@
 
 package org.jboss.forge.addon.watch.ui;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.endsWith;
 
 import java.io.File;
 
 import org.jboss.forge.furnace.addons.AddonId;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,12 +27,11 @@ public class AddonWatchCommandTest
     * {@link org.jboss.forge.addon.watch.ui.AddonWatchCommand#getInstallationPathFor(org.jboss.forge.furnace.addons.AddonId)}.
     */
    @Test
-   @Ignore
    public void testGetInstallationPathFor()
    {
       AddonId id = AddonId.from("org.foo:bar", "1.0.0-SNAPSHOT");
       File path = AddonWatchCommand.getInstallationPathFor(id);
-      Assert.assertThat(path.toString(), equalTo("~/.m2/repository/org/foo/bar/1.0.0-SNAPSHOT/bar-1.0.0-SNAPSHOT.jar"));
+      Assert.assertThat(path.toString(), endsWith("/.m2/repository/org/foo/bar/1.0.0-SNAPSHOT/bar-1.0.0-SNAPSHOT.jar"));
    }
 
 }
