@@ -70,17 +70,17 @@ public class AddonWatchCommand implements UICommand
          return Results.fail("No SNAPSHOT addons found. Execute again when at least one SNAPSHOT addon is installed");
       }
 
-      // Find local repository path for each addon
       for (final AddonId addonId : snapshotAddons)
       {
+         // Find local repository path for each addon
          File installationPath = getInstallationPathFor(addonId);
          FileResource<?> resource = resourceFactory.create(FileResource.class, installationPath);
          resource.monitor().addResourceListener(e -> {
+            // Run addonManager.remove and addonManager.install
             addonManager.remove(addonId).perform();
             addonManager.install(addonId).perform();
          });
       }
-      // Run addonManager.remove and addonManager.install
       return Results.success("Listening for changes in the following addons: " + snapshotAddons);
    }
 
